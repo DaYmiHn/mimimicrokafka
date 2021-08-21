@@ -1,4 +1,5 @@
-# Node.js Library for building microservices communicating via Kafka
+# mimiMicroKafka
+Node.js Library for building microservices communicating via Kafka
 
 [![npm package](https://img.shields.io/badge/npm%20i-mimimicrokafka-darkgreen)](https://www.npmjs.com/package/mimimicrokafka) 
 [![status](https://img.shields.io/badge/status-in%20dev-yellow)](https://www.npmjs.com/package/mimimicrokafka) 
@@ -46,7 +47,7 @@ app.listen(8080, () => console.log('listening 8080...'));
 
 ### orders.js
 ```js
-import { Microservice } from 'example-typescript-package'
+import { Microservice } from 'mimimicrokafka'
 
 const app = new Microservice({
   microservice: 'orders',
@@ -62,7 +63,7 @@ app.post('/orders/123', async (req, res) => {
     path: '/users',
     method: 'post',
     body: {
-      data: 228,
+      data: 123,
     },
   }, req);
   console.log(req.user);
@@ -73,6 +74,8 @@ app.start();
 ```
 
 ## TODO:
-- [ ] add KafkaStreams capability
-- [ ] optimize the route for returning the answer to gateway
-- [ ] add the ability to raise your server through the "http" library without "express"
+-  add KafkaStreams capability
+-  optimize the route for returning the answer to gateway
+-  add the ability to raise your server through the "http" library without "express"
+
+### Pull request welcome ✌🏻
