@@ -3,6 +3,7 @@
 
 
 [![npm package](https://img.shields.io/badge/npm%20i-mimimicrokafka-darkgreen)](https://www.npmjs.com/package/mimimicrokafka) 
+[![status](https://img.shields.io/badge/status-in%20dev-yellow)](https://www.npmjs.com/package/mimimicrokafka) 
 [![version number](https://img.shields.io/npm/v/mimimicrokafka?color=green&label=version)](https://github.com/daymihn/mimimicrokafka/releases) 
 [![License](https://img.shields.io/github/license/daymihn/mimimicrokafka)](https://github.com/DaYmiHn/mimimicrokafka/blob/main/LICENSE)
 <!-- [![Actions Status](https://github.com/daymihn/mimimicrokafka/workflows/Test/badge.svg)](https://github.com/daymihn/mimimicrokafka/actions)  -->
@@ -73,3 +74,8 @@ app.post('/orders/123', async (req, res) => {
 
 app.start();
 ```
+
+## TODO:
+- [ ] add KafkaStreams capability
+- [ ] optimize the route for returning the answer to gateway
+- [ ] add the ability to raise your server through the "http" library without "express"
