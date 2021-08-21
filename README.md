@@ -1,6 +1,4 @@
-# Example TypeScript Package ready to be published on npm for 2021
-
-
+# Node.js Library for building microservices communicating via Kafka
 
 [![npm package](https://img.shields.io/badge/npm%20i-mimimicrokafka-darkgreen)](https://www.npmjs.com/package/mimimicrokafka) 
 [![status](https://img.shields.io/badge/status-in%20dev-yellow)](https://www.npmjs.com/package/mimimicrokafka) 
@@ -8,7 +6,6 @@
 [![License](https://img.shields.io/github/license/daymihn/mimimicrokafka)](https://github.com/DaYmiHn/mimimicrokafka/blob/main/LICENSE)
 <!-- [![Actions Status](https://github.com/daymihn/mimimicrokafka/workflows/Test/badge.svg)](https://github.com/daymihn/mimimicrokafka/actions)  -->
 
-Node.js Library for building microservices communicating via Kafka.
 
 ## For example:
 
