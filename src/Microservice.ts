@@ -44,8 +44,6 @@ export default class MicroService extends KafkaApp {
         for (const message of batch.messages) {
           if (!isRunning() || isStale()) break;
 
-          await sleep(1000);
-
           const messageObj = JSON.parse(message.value.toString());
           const { sender, path, method, data, ask, requestId } = messageObj;
 
