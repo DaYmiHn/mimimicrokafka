@@ -13,8 +13,6 @@ export default class KafkaApp {
   _admin: any;
 
   constructor(options: any) {
-    console.clear();
-    console.log('234')
     this.options = options;
     this._producerConnection = null;
     this._consumerConnection = null;

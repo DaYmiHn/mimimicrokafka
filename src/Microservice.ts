@@ -1,7 +1,5 @@
 import KafkaApp from './KafkaApp';
 
-const sleep = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
-
 export default class MicroService extends KafkaApp {
   post: any;
   get: any;
