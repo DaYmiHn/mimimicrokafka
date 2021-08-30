@@ -1,5 +1,5 @@
-import crypto from 'crypto'
-import { Microservice } from './../src/index.js'
+import crypto from 'crypto';
+import { Microservice } from './../src/index.js';
 
 const app = new Microservice({
   microservice: 'jwt',
@@ -18,9 +18,7 @@ const tokenKey = '1a2b-6784-2579-dfg4';
 
 app.post('/jwt/check', async (req, res) => {
   if (req.headers.authorization) {
-    const tokenParts = req.headers.authorization
-      .split(' ')[1]
-      .split('.');
+    const tokenParts = req.headers.authorization.split(' ')[1].split('.');
 
     const signature = crypto
       .createHmac('SHA256', tokenKey)
@@ -29,9 +27,7 @@ app.post('/jwt/check', async (req, res) => {
 
     if (signature === tokenParts[2]) {
       req.user = JSON.parse(
-        Buffer.from(tokenParts[1], 'base64').toString(
-          'utf8',
-        ),
+        Buffer.from(tokenParts[1], 'base64').toString('utf8')
       );
     } else {
       req.user = { jopa: '324345345' };
@@ -42,16 +38,11 @@ app.post('/jwt/check', async (req, res) => {
 
 app.post('/jwt/auth', async (req, res) => {
   for (const user of users) {
-    if (
-      req.body.login === user.login
-      && req.body.password === user.password
-    ) {
+    if (req.body.login === user.login && req.body.password === user.password) {
       const head = Buffer.from(
-        JSON.stringify({ alg: 'HS256', typ: 'jwt' }),
+        JSON.stringify({ alg: 'HS256', typ: 'jwt' })
       ).toString('base64');
-      const body = Buffer.from(JSON.stringify(user)).toString(
-        'base64',
-      );
+      const body = Buffer.from(JSON.stringify(user)).toString('base64');
       const signature = crypto
         .createHmac('SHA256', tokenKey)
         .update(`${head}.${body}`)

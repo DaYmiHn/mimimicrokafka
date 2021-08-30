@@ -1,6 +1,6 @@
-import express from 'express'
-import bodyParser from 'body-parser'
-import { Gateway } from './../src/index.js'
+import express from 'express';
+import bodyParser from 'body-parser';
+import { Gateway } from './../src/index.js';
 
 const app = express();
 app.use(bodyParser.json());
@@ -14,13 +14,8 @@ const gateway = new Gateway({
 app.use(gateway.middleware());
 
 app.use(async (req, res, next) => {
-  const data = await gateway.ask('jwt', {
-    path: '/jwt/check',
-    method: 'post',
-  }, req);
-
+  const data = await gateway.ask('jwt').post({ path: '/jwt/check' }, req);
   req.user = data.req.user;
-
   next();
 });
 

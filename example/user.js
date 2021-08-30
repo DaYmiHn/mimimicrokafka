@@ -1,4 +1,4 @@
-import { Microservice } from './../src/index.js'
+import { Microservice } from './../src/index.js';
 
 const app = new Microservice({
   microservice: 'users',
@@ -6,19 +6,19 @@ const app = new Microservice({
 });
 
 app.post('/users', async (req, res) => {
-  var { data } = await app.ask('users', {
-    path: '/users/14',
-    method: 'get',
-    body: {
-      data: req.body.data + 12,
+  var { data } = await app.ask('users').post(
+    {
+      path: '/users/14',
+      body: {
+        data: req.body.data + 12,
+      },
     },
-  }, req);
+    req
+  );
 
-  var { data } = await app.ask('auth', {
-    path: '/auth',
-    method: 'post',
-  }, req);
   console.log(req.user);
+  var { data } = await app.ask('auth').post({ path: '/auth' }, req);
+
   return res.json(data);
 });
 

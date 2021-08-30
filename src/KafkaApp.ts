@@ -28,7 +28,8 @@ export default class KafkaApp {
     options?: any;
   }) {
     if (!this._connection) {
-      const connectionType: TConnectionType = `_${type}Connection` as TConnectionType;
+      const connectionType: TConnectionType =
+        `_${type}Connection` as TConnectionType;
 
       this[connectionType as keyof KafkaApp] = new Kafka({
         clientId: 'my-app',
@@ -38,9 +39,8 @@ export default class KafkaApp {
 
       this._admin = this[connectionType as keyof KafkaApp].admin();
 
-      this[connectionType as keyof KafkaApp] = this[
-        connectionType as keyof KafkaApp
-      ][type](options);
+      this[connectionType as keyof KafkaApp] =
+        this[connectionType as keyof KafkaApp][type](options);
 
       await this[connectionType as keyof KafkaApp].connect();
       await this.addEventListenersForCrash(connectionType);
@@ -153,10 +153,20 @@ export default class KafkaApp {
     };
   }
 
-  ask(name: string, query: any, req: any) {
-    const message = this.createMessage(req, { ...query });
-    const promise = this.newRequest(message.requestId);
-    this.sendMessage(name, message);
-    return promise;
+  ask(name: string) {
+    type MethodT = { post?: any; get?: any; put?: any; delete?: any };
+
+    const methods: MethodT = {};
+
+    ['post', 'get', 'put', 'delete'].forEach((method: string) => {
+      methods[method as keyof MethodT] = (query: any, req: any) => {
+        req.method = method;
+        const message = this.createMessage(req, { ...query });
+        const promise = this.newRequest(message.requestId);
+        this.sendMessage(name, message);
+        return promise;
+      };
+    });
+    return methods;
   }
 }
