@@ -1,16 +1,23 @@
 import KafkaApp from './KafkaApp';
 
-export default class Gateway extends KafkaApp {
-  _producerStarting: any;
-  _consumerStarting: any;
+interface OptionI {
+  name: string,
+  brokers: string[],
+  ssl: boolean,
+  sasl: any
+}
 
-  constructor(options: any) {
+export default class Gateway extends KafkaApp {
+  _producerStarting: boolean;
+  _consumerStarting: boolean;
+
+  constructor(options: OptionI) {
     super({
-      requests: {
-        timeout: 10000,
-      },
+      requestTimeout: 25000,
       ...options,
     });
+    this._producerStarting = false;
+    this._consumerStarting = false;
   }
 
   async _startProducer() {
@@ -41,8 +48,8 @@ export default class Gateway extends KafkaApp {
     if (!this._consumerStarting) {
       this._startConsumers();
     }
-    return async (req: any, res: any, next: any) => {
-      res.delegate = async (name: any) => {
+    return async (req: any, res: any, next: Function) => {
+      res.delegate = async (name: string) => {
         const message = this.createMessage(req, {});
         const promise = this.newRequest(message.requestId, res);
 

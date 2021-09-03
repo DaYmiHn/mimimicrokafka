@@ -1,23 +1,28 @@
-import { Kafka } from 'kafkajs';
+import { Kafka, Producer, Consumer, SASLOptions } from 'kafkajs';
 import { nanoid } from 'nanoid';
 
 type TConnectionType = '_producerConnection' | '_consumerConnection';
 
+interface OptionI {
+  name: string,
+  brokers: string[],
+  sasl: SASLOptions,
+  ssl: boolean,
+  requestTimeout?: number,
+}
+
 export default class KafkaApp {
-  options: any;
+  options: OptionI;
   _producerConnection: any;
   _consumerConnection: any;
   _requests: any;
-  _name: any;
-  _connection: any;
+  _name: string;
   _admin: any;
 
-  constructor(options: any) {
+  constructor(options: OptionI) {
     this.options = options;
-    this._producerConnection = null;
-    this._consumerConnection = null;
     this._requests = new Map();
-    this._name = options.microservice || options.name;
+    this._name = options.name;
   }
 
   async createConnection({
@@ -27,22 +32,20 @@ export default class KafkaApp {
     type: 'producer' | 'consumer';
     options?: any;
   }) {
-    if (!this._connection) {
-      const connectionType: TConnectionType =
-        `_${type}Connection` as TConnectionType;
+    const connectionType: TConnectionType =
+      `_${type}Connection` as TConnectionType;
 
-      this[connectionType as keyof KafkaApp] = new Kafka({
+    if (!this[connectionType]) {
+      this[connectionType] = new Kafka({
         clientId: 'my-app',
-        brokers: this.options.brokers,
-        requestTimeout: 25000,
+        ...this.options
       });
 
-      this._admin = this[connectionType as keyof KafkaApp].admin();
+      this._admin = this[connectionType].admin();
 
-      this[connectionType as keyof KafkaApp] =
-        this[connectionType as keyof KafkaApp][type](options);
+      this[connectionType] = this[connectionType][type](options) as Producer | Consumer;
 
-      await this[connectionType as keyof KafkaApp].connect();
+      await this[connectionType].connect();
       await this.addEventListenersForCrash(connectionType);
     }
   }
@@ -109,7 +112,7 @@ export default class KafkaApp {
     this._requests.delete(requestId);
   }
 
-  async sendMessage(service: any, payload: any) {
+  async sendMessage(service: string, payload: any) {
     console.log(
       '\x1b[33m%s\x1b[0m',
       `send message to - "${service}" with id "${payload.requestId}"\n`
@@ -154,7 +157,7 @@ export default class KafkaApp {
   }
 
   ask(name: string) {
-    type MethodT = { post?: any; get?: any; put?: any; delete?: any };
+    type MethodT = { post?: Function; get?: Function; put?: Function; delete?: Function };
 
     const methods: MethodT = {};
 

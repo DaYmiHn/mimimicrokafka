@@ -1,30 +1,34 @@
 import KafkaApp from './KafkaApp';
 
+interface OptionI {
+  name: string,
+  brokers: string[],
+  ssl: boolean,
+  sasl: any
+}
+
 export default class MicroService extends KafkaApp {
-  post: any;
-  get: any;
-  put: any;
-  delete: any;
+  post?: Function;
+  get?: Function;
+  put?: Function;
+  delete?: Function;
   _endpoints: any;
-  resMock: any;
-  _consumersStarting: any;
-  _name: any;
-  _requests: any;
-  resolveRequest: any;
-  listenMessages: any;
-  createConsumeConnection: any;
-  createMessage: any;
-  sendMessage: any;
-  createProducerConnection: any;
+  resMock: object;
+  _consumersStarting: boolean;
 
-  constructor(options: any) {
-    super(options);
-    this._endpoints = {};
-
-    ['post', 'get', 'put', 'delete'].forEach((method) => {
-      this[method as keyof MicroService] = this.endpointSaver(method);
+  constructor(options: OptionI) {
+    super({
+      requestTimeout: 25000,
+      ...options,
     });
+    this._endpoints = {};
+    this._consumersStarting = false;
 
+    ['post', 'get', 'put', 'delete'].forEach((method: string) => {
+      let endpoint = method as 'post' | 'get' | 'put' | 'delete'
+      this[endpoint] = this.endpointSaver(method);
+    });
+    
     this.resMock = ['send', 'json'].reduce(
       (res, cur) => ({
         ...res,
@@ -34,7 +38,7 @@ export default class MicroService extends KafkaApp {
     );
   }
 
-  async _startConsumers() {
+  async _startConsumers():Promise<void> {
     if (!this._consumersStarting) {
       await this.createConsumeConnection(this._name);
 
@@ -79,7 +83,7 @@ export default class MicroService extends KafkaApp {
     }
   }
 
-  endpointSaver(method: any) {
+  endpointSaver(method: string):Function {
     return (endpoint: string, callback: void) => {
       this._endpoints[endpoint] = {
         ...this._endpoints[endpoint],
@@ -88,7 +92,7 @@ export default class MicroService extends KafkaApp {
     };
   }
 
-  async start() {
+  async start():Promise<void> {
     await this.createProducerConnection();
     await this._startConsumers();
   }
